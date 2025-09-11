@@ -19,7 +19,7 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_PLACES_API_KEY")
 
 # === LLM: Groq ===
 llm = LLM(
-    model="llama-3.3-70b-versatile",
+    model="llama-3.1-8b-instant",
     api_key=os.getenv("GROQ_API_KEY"),
     base_url="https://api.groq.com/openai/v1"
 )
@@ -122,8 +122,9 @@ def parse_date_str(date_str: str):
         return s
     return None
 
-# Common fallback mapping for Indian city names
+# Common fallback mapping for major cities worldwide
 FALLBACK_IATA = {
+    # Indian cities
     "bangalore": "BLR",
     "bengaluru": "BLR",
     "bombay": "BOM",
@@ -134,6 +135,38 @@ FALLBACK_IATA = {
     "chennai": "MAA",
     "kolkata": "CCU",
     "calcutta": "CCU",
+    # International major cities
+    "london": "LHR",
+    "new york": "JFK",
+    "new york city": "JFK",
+    "nyc": "JFK",
+    "paris": "CDG",
+    "tokyo": "NRT",
+    "dubai": "DXB",
+    "singapore": "SIN",
+    "bangkok": "BKK",
+    "hong kong": "HKG",
+    "sydney": "SYD",
+    "melbourne": "MEL",
+    "los angeles": "LAX",
+    "san francisco": "SFO",
+    "chicago": "ORD",
+    "miami": "MIA",
+    "amsterdam": "AMS",
+    "frankfurt": "FRA",
+    "madrid": "MAD",
+    "barcelona": "BCN",
+    "rome": "FCO",
+    "milan": "MXP",
+    "zurich": "ZUR",
+    "istanbul": "IST",
+    "doha": "DOH",
+    "kuwait": "KWI",
+    "riyadh": "RUH",
+    "cairo": "CAI",
+    "johannesburg": "JNB",
+    "nairobi": "NBO",
+    "lagos": "LOS",
 }
 
 def get_google_place_details(hotel_name: str, city_code: str):
@@ -466,12 +499,11 @@ def create_travel_agent():
     return Agent(
         role="Travel Planning Specialist",
         goal="Plan comprehensive travel itineraries including flights, hotels, and attractions",
-        backstory="""You are an expert travel planner with years of experience in creating 
-        personalized travel experiences. You excel at finding the best flights, accommodations, 
-        and attractions that match travelers' preferences and budgets.""",
+        backstory="""You are an expert travel planner who finds the best flights, hotels, 
+        and attractions for travelers.""",
         tools=[search_flights, search_hotels, search_attractions],
         llm=llm,
-        verbose=True,
+        verbose=False,
         allow_delegation=False
     )
 
@@ -571,7 +603,7 @@ def main():
                 crew = Crew(
                     agents=[create_travel_agent()],
                     tasks=[task],
-                    verbose=True
+                    verbose=False
                 )
                 
                 # Execute the crew
