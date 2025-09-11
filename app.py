@@ -564,9 +564,26 @@ def main():
         if st.button("Search Flights"):
             if origin and destination:
                 with st.spinner("Searching flights..."):
-                    ret_str = return_date.strftime("%Y-%m-%d") if return_date else None
-                    results = search_flights(origin, destination, departure.strftime("%Y-%m-%d"), ret_str)
-                    st.json(results)
+                    try:
+                        # Convert city names to IATA codes
+                        origin_iata = get_iata_code(origin)
+                        dest_iata = get_iata_code(destination)
+                        
+                        if not origin_iata:
+                            st.error(f"Could not find airport code for: {origin}")
+                        elif not dest_iata:
+                            st.error(f"Could not find airport code for: {destination}")
+                        else:
+                            # Call the underlying flight search function
+                            ret_str = return_date.strftime("%Y-%m-%d") if return_date else None
+                            results = _search_flights(origin_iata, dest_iata, departure.strftime("%Y-%m-%d"), "USD", ret_str)
+                            if isinstance(results, dict) and "error" in results:
+                                st.error(results["error"])
+                            else:
+                                st.success(f"Found {len(results)} flight options!")
+                                st.json(results)
+                    except Exception as e:
+                        st.error(f"Error searching flights: {str(e)}")
         
         # Hotel search
         st.subheader("🏨 Hotels")
@@ -577,8 +594,22 @@ def main():
         if st.button("Search Hotels"):
             if hotel_city:
                 with st.spinner("Searching hotels..."):
-                    results = search_hotels(hotel_city, check_in.strftime("%Y-%m-%d"), check_out.strftime("%Y-%m-%d"))
-                    st.json(results)
+                    try:
+                        # Convert city name to IATA code
+                        city_iata = get_iata_code(hotel_city)
+                        
+                        if not city_iata:
+                            st.error(f"Could not find airport/city code for: {hotel_city}")
+                        else:
+                            # Call the underlying hotel search function
+                            results = _search_hotels(city_iata, check_in.strftime("%Y-%m-%d"), check_out.strftime("%Y-%m-%d"), 1, "USD")
+                            if isinstance(results, dict) and "error" in results:
+                                st.error(results["error"])
+                            else:
+                                st.success(f"Found {len(results)} hotel options!")
+                                st.json(results)
+                    except Exception as e:
+                        st.error(f"Error searching hotels: {str(e)}")
     
     # Main content area
     st.header("🤖 AI Travel Planner")
