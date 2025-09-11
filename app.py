@@ -169,6 +169,92 @@ FALLBACK_IATA = {
     "lagos": "LOS",
 }
 
+def display_flight_results(flights):
+    """Display flight results in a user-friendly format"""
+    if not flights:
+        st.warning("No flights found")
+        return
+    
+    for i, flight in enumerate(flights):
+        with st.container():
+            col1, col2, col3, col4 = st.columns([2, 2, 2, 1])
+            
+            with col1:
+                st.write(f"**Flight {i+1}**")
+                st.write(f"🛫 {flight.get('origin')} → {flight.get('destination')}")
+                st.write(f"✈️ Airline: {flight.get('airline')}")
+                
+            with col2:
+                departure_time = flight.get('departure', '').split('T')[1][:5] if 'T' in flight.get('departure', '') else 'N/A'
+                arrival_time = flight.get('arrival', '').split('T')[1][:5] if 'T' in flight.get('arrival', '') else 'N/A'
+                st.write(f"🕐 Departure: {departure_time}")
+                st.write(f"🕑 Arrival: {arrival_time}")
+                
+            with col3:
+                stops = flight.get('stops', 0)
+                stops_text = "Direct" if stops == 0 else f"{stops} stop(s)"
+                duration = flight.get('duration', '').replace('PT', '').replace('H', 'h ').replace('M', 'm')
+                st.write(f"🔄 {stops_text}")
+                st.write(f"⏱️ Duration: {duration}")
+                
+            with col4:
+                price = flight.get('price')
+                currency = flight.get('currency')
+                st.write(f"**💰 {currency} {price}**")
+            
+            st.divider()
+
+def display_hotel_results(hotels):
+    """Display hotel results in a user-friendly format with photos"""
+    if not hotels:
+        st.warning("No hotels found")
+        return
+    
+    for i, hotel in enumerate(hotels):
+        with st.container():
+            col1, col2 = st.columns([1, 2])
+            
+            with col1:
+                # Display hotel image if available
+                if hotel.get('image') or hotel.get('google_photo'):
+                    image_url = hotel.get('google_photo') or hotel.get('image')
+                    try:
+                        st.image(image_url, width=200)
+                    except:
+                        st.write("📷 Image not available")
+                else:
+                    st.write("📷 Image not available")
+            
+            with col2:
+                st.write(f"**🏨 {hotel.get('name', 'Hotel Name')}**")
+                
+                # Hotel details
+                address = hotel.get('google_address') or hotel.get('address', 'Address not available')
+                st.write(f"📍 {address}")
+                
+                # Rating and reviews
+                if hotel.get('google_rating'):
+                    rating = hotel.get('google_rating')
+                    reviews = hotel.get('google_reviews', 0)
+                    st.write(f"⭐ {rating}/5 ({reviews} reviews)")
+                
+                # Category and amenities
+                if hotel.get('category'):
+                    st.write(f"🏆 Category: {hotel.get('category')} stars")
+                
+                # Price
+                price = hotel.get('price')
+                currency = hotel.get('currency')
+                check_in = hotel.get('check_in')
+                check_out = hotel.get('check_out')
+                st.write(f"**💰 {currency} {price}** ({check_in} to {check_out})")
+                
+                # Website link
+                if hotel.get('google_website'):
+                    st.link_button("🌐 Visit Website", hotel.get('google_website'))
+            
+            st.divider()
+
 def get_google_place_details(hotel_name: str, city_code: str):
     """
     Fetch hotel details from Google Places API using text search + details API.
@@ -581,7 +667,7 @@ def main():
                                 st.error(results["error"])
                             else:
                                 st.success(f"Found {len(results)} flight options!")
-                                st.json(results)
+                                display_flight_results(results)
                     except Exception as e:
                         st.error(f"Error searching flights: {str(e)}")
         
@@ -607,7 +693,7 @@ def main():
                                 st.error(results["error"])
                             else:
                                 st.success(f"Found {len(results)} hotel options!")
-                                st.json(results)
+                                display_hotel_results(results)
                     except Exception as e:
                         st.error(f"Error searching hotels: {str(e)}")
     
