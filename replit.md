@@ -1,8 +1,8 @@
-# Travel Planning Application
+# AI Travel Agent
 
 ## Overview
 
-This is a travel planning application built with Streamlit that leverages AI agents to help users plan and book travel. The application integrates multiple external services including flight booking through Amadeus, location data via Google Places API, and AI-powered travel recommendations using CrewAI agents with Groq's LLM models. The system uses a multi-agent architecture where specialized AI agents handle different aspects of travel planning such as flight search, destination research, and itinerary creation.
+This is a Streamlit-based AI Travel Agent application that helps users plan trips using multiple AI agents and third-party APIs. The system leverages CrewAI for multi-agent orchestration, Groq's LLM for AI capabilities, and integrates with Amadeus for flight data and Google Places for location information. The application provides an interactive web interface for users to input travel preferences and receive comprehensive travel plans.
 
 ## User Preferences
 
@@ -11,43 +11,42 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
-- **Streamlit Framework**: Web-based user interface that provides an interactive dashboard for travel planning
-- **Real-time Processing**: Direct user interaction with AI agents through the web interface
-- **Error Handling**: Graceful degradation with user-friendly error messages and retry mechanisms
+- **Framework**: Streamlit for rapid web application development
+- **Interface**: Single-page application with interactive forms and real-time responses
+- **User Experience**: Direct input forms for travel preferences with immediate AI-generated results
 
 ### Backend Architecture
-- **Multi-Agent System**: Uses CrewAI framework to orchestrate specialized AI agents for different travel planning tasks
-- **LLM Integration**: Groq's Llama 3.3 70B model for natural language processing and reasoning
-- **Rate Limiting**: Built-in retry mechanisms with exponential backoff for API calls
-- **JSON Processing**: Robust parsing system to extract structured data from LLM responses
+- **AI Framework**: CrewAI for multi-agent system coordination
+- **LLM Integration**: Groq's Llama-3.1-8b-instant model for natural language processing
+- **Agent Pattern**: Multiple specialized AI agents working collaboratively on travel planning tasks
+- **Error Handling**: Retry mechanism for rate-limited API calls with exponential backoff
 
 ### Data Processing
-- **Environment Configuration**: Secure API key management through environment variables
-- **Response Parsing**: Custom utilities to extract and validate JSON data from AI agent responses
-- **Error Recovery**: Automatic retry logic for rate-limited API calls
+- **Response Parsing**: JSON extraction from LLM responses with fallback parsing
+- **Data Formatting**: Tabulate library for structured data presentation
+- **Configuration**: Environment variable-based configuration for API credentials
 
-### Service Integration Pattern
-- **Travel APIs**: Direct integration with travel booking services for real-time data
-- **Location Services**: Geographic data retrieval for destination information
-- **AI Orchestration**: Coordinated multi-agent workflows for complex travel planning tasks
+### Deployment Strategy
+- **Primary Target**: Cloud platforms supporting long-running Python servers (DigitalOcean App Platform, AWS EC2)
+- **Infrastructure**: Containerized deployment with environment variable injection
+- **Scalability**: Single-instance deployment suitable for moderate traffic
 
 ## External Dependencies
 
-### AI and Language Models
-- **Groq API**: Llama 3.3 70B model for natural language processing and travel recommendations
-- **CrewAI**: Multi-agent AI framework for orchestrating specialized travel planning agents
+### AI Services
+- **Groq API**: Primary LLM provider using Llama-3.1-8b-instant model for natural language processing
+- **CrewAI**: Multi-agent framework for coordinating specialized AI agents
 
-### Travel Services
-- **Amadeus API**: Flight search, booking, and travel data services
-- **Google Places API**: Location data, points of interest, and geographic information
+### Travel APIs
+- **Amadeus API**: Flight search, pricing, and booking data integration
+- **Google Places API**: Location data, points of interest, and geographical information
 
-### Core Libraries
-- **Streamlit**: Web application framework for the user interface
-- **Python-dotenv**: Environment variable management for secure API key handling
-- **Requests**: HTTP client for external API communication
-- **Tabulate**: Data formatting and presentation utilities
+### Infrastructure Services
+- **DigitalOcean App Platform**: Recommended deployment platform for production hosting
+- **AWS EC2**: Alternative deployment option with manual server management
 
-### Development Tools
-- **AST and JSON**: Python standard libraries for data parsing and manipulation
-- **DateTime**: Standard library for date and time handling in travel planning
-- **Regular Expressions**: Text processing and data extraction utilities
+### Development Dependencies
+- **Streamlit**: Web application framework for Python
+- **Python-dotenv**: Environment variable management
+- **Requests**: HTTP client for API communications
+- **Tabulate**: Data formatting and presentation library

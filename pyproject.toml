@@ -1,7 +1,7 @@
 [project]
-name = "repl-nix-workspace"
-version = "0.1.0"
-description = "Add your description here"
+name = "ai-travel-agent"
+version = "1.0.0"
+description = "Professional AI-powered travel planning system with flight search, hotel booking, and intelligent itinerary creation"
 requires-python = ">=3.11"
 dependencies = [
     "amadeus>=12.0.0",
